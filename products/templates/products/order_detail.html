@@ -1,0 +1,33 @@
+<!-- products/templates/products/order_detail.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Order Detail</h2>
+<table class="table">
+    <tr>
+        <th>Product</th>
+        <td>{{ order.product.name }}</td>
+    </tr>
+    <tr>
+        <th>Order Type</th>
+        <td>{{ order.get_order_type_display }}</td>
+    </tr>
+    <tr>
+        <th>Price</th>
+        <td>{{ order.price }}</td>
+    </tr>
+    <tr>
+        <th>Quantity</th>
+        <td>{{ order.quantity }}</td>
+    </tr>
+    <tr>
+        <th>User</th>
+        <td>{{ order.user.username }}</td>
+    </tr>
+    <tr>
+        <th>Created At</th>
+        <td>{{ order.created_at }}</td>
+    </tr>
+</table>
+<a href="{% url 'active_orders' %}" class="btn btn-secondary">Back to Active Orders</a>
+{% endblock %}

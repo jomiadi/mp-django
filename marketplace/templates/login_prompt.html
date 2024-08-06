@@ -1,0 +1,14 @@
+<!-- templates/login_prompt.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6 offset-md-3 text-center">
+            <h2>You need to log in or register to view active orders</h2>
+            <a href="{% url 'login' %}" class="btn btn-primary btn-lg mt-3">Login</a>
+            <a href="{% url 'register' %}" class="btn btn-secondary btn-lg mt-3">Register</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
