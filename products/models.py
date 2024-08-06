@@ -29,9 +29,12 @@ class Order(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.PositiveIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
+    currency = models.CharField(max_length=10, default='USD')
 
     def __str__(self):
         return f"{self.order_type.capitalize()} order for {self.product.name} by {self.user.username}"
+
+
 
 class Deal(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)

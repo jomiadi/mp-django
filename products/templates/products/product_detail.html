@@ -1,142 +1,161 @@
-<!-- templates/products/product_detail.html -->
 {% extends 'base.html' %}
 
 {% block content %}
 <div class="container mt-4">
-    <!-- Переключатели Buy/Sell -->
-    <div class="row mb-4">
-        <div class="col-md-12 text-center">
-            <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                <label class="btn btn-secondary active" id="buy-tab">
-                    <input type="radio" name="options" id="option1" autocomplete="off" checked> Buy
-                </label>
-                <label class="btn btn-secondary" id="sell-tab">
-                    <input type="radio" name="options" id="option2" autocomplete="off"> Sell
-                </label>
-            </div>
-        </div>
-    </div>
-
-    <!-- Фильтры -->
-    <div class="row mb-4">
-        <div class="col-md-4">
+    <div class="row">
+        <div class="col-md-3">
             <h3>Фильтры</h3>
-            <div>
-                <h5>Банки</h5>
-                <ul class="list-group">
-                    {% for bank in banks %}
-                    <li class="list-group-item"><a href="?bank={{ bank }}">{{ bank }}</a></li>
-                    {% endfor %}
-                </ul>
-            </div>
-            <div>
+            <div class="mb-4">
                 <h5>Гео</h5>
                 <ul class="list-group">
                     {% for geo in geos %}
-                    <li class="list-group-item"><a href="?geo={{ geo }}">{{ geo }}</a></li>
+                    <li class="list-group-item"><a href="#" class="filter" data-filter-type="geo" data-filter-value="{{ geo }}">{{ geo }}</a></li>
                     {% endfor %}
                 </ul>
             </div>
-            <div>
+            <div class="mb-4">
                 <h5>Цели</h5>
                 <ul class="list-group">
                     {% for goal in goals %}
-                    <li class="list-group-item"><a href="?goal={{ goal }}">{{ goal }}</a></li>
+                    <li class="list-group-item"><a href="#" class="filter" data-filter-type="goal" data-filter-value="{{ goal }}">{{ goal }}</a></li>
                     {% endfor %}
                 </ul>
             </div>
         </div>
 
-        <!-- Списки ордеров -->
-        <div class="col-md-8">
-            <h2>{{ product.name }}</h2>
-            <p>{{ product.description }}</p>
+        <div class="col-md-9">
+            <div class="product-header d-flex justify-content-between align-items-center">
+                <div>
+                    <h2>{{ product.name }}</h2>
+                    <p>{{ product.description }}</p>
+                </div>
+                <div class="buy-sell-selector btn-group btn-group-toggle" data-toggle="buttons" style="width: 200px;">
+                    <label class="btn btn-secondary" id="buy-tab">
+                        <input type="radio" name="options" id="option1" autocomplete="off"> Buy
+                    </label>
+                    <label class="btn btn-secondary active" id="sell-tab">
+                        <input type="radio" name="options" id="option2" autocomplete="off" checked> Sell
+                    </label>
+                </div>
+            </div>
 
-            <!-- Buy Orders -->
-            <div id="buy-orders" class="orders-section">
+            <div id="buy-orders" class="orders mt-4 d-none">
                 <h3>Buy Orders</h3>
-                <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Username</th>
-                                <th>Quantity</th>
-                                <th>Price</th>
-                                <th>Currency</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% if buy_orders %}
-                                {% for order in buy_orders %}
-                                <tr>
-                                    <td>{{ order.user.username }}</td>
-                                    <td>{{ order.quantity }}</td>
-                                    <td>{{ order.price }}</td>
-                                    <td>{{ order.currency }}</td>
-                                </tr>
-                                {% endfor %}
-                            {% else %}
-                                <tr>
-                                    <td colspan="4" class="text-center">No buy orders available.</td>
-                                </tr>
-                            {% endif %}
-                        </tbody>
-                    </table>
-                </div>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Currency</th>
+                        </tr>
+                    </thead>
+                    <tbody id="buy-orders-body">
+                        {% for order in buy_orders %}
+                        <tr>
+                            <td>{{ order.user.username }}</td>
+                            <td>{{ order.quantity }}</td>
+                            <td>{{ order.price }}</td>
+                            <td>{{ order.currency }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <a href="{% url 'create_order' product.id 'buy' %}" class="btn btn-success">Create Buy Order</a>
             </div>
 
-            <!-- Sell Orders -->
-            <div id="sell-orders" class="orders-section d-none">
+            <div id="sell-orders" class="orders mt-4">
                 <h3>Sell Orders</h3>
-                <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Username</th>
-                                <th>Quantity</th>
-                                <th>Price</th>
-                                <th>Currency</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% if sell_orders %}
-                                {% for order in sell_orders %}
-                                <tr>
-                                    <td>{{ order.user.username }}</td>
-                                    <td>{{ order.quantity }}</td>
-                                    <td>{{ order.price }}</td>
-                                    <td>{{ order.currency }}</td>
-                                </tr>
-                                {% endfor %}
-                            {% else %}
-                                <tr>
-                                    <td colspan="4" class="text-center">No sell orders available.</td>
-                                </tr>
-                            {% endif %}
-                        </tbody>
-                    </table>
-                </div>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Currency</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sell-orders-body">
+                        {% for order in sell_orders %}
+                        <tr>
+                            <td>{{ order.user.username }}</td>
+                            <td>{{ order.quantity }}</td>
+                            <td>{{ order.price }}</td>
+                            <td>{{ order.currency }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <a href="{% url 'create_order' product.id 'sell' %}" class="btn btn-danger">Create Sell Order</a>
             </div>
-
-            {% if user.is_authenticated %}
-                <div class="d-flex justify-content-between mb-4">
-                    <a href="{% url 'create_order' product.id 'buy' %}" class="btn btn-success btn-lg">Create Buy Order</a>
-                    <a href="{% url 'create_order' product.id 'sell' %}" class="btn btn-danger btn-lg">Create Sell Order</a>
-                </div>
-            {% endif %}
         </div>
     </div>
 </div>
 
 <script>
-    document.getElementById('buy-tab').addEventListener('click', function() {
-        document.getElementById('buy-orders').classList.remove('d-none');
-        document.getElementById('sell-orders').classList.add('d-none');
-    });
+    document.addEventListener('DOMContentLoaded', function() {
+        // Установка активного таба по умолчанию на Sell
+        document.getElementById('sell-tab').click();
 
-    document.getElementById('sell-tab').addEventListener('click', function() {
-        document.getElementById('sell-orders').classList.remove('d-none');
-        document.getElementById('buy-orders').classList.add('d-none');
+        // Переключение между вкладками Buy и Sell без влияния фильтров
+        document.getElementById('buy-tab').addEventListener('click', function() {
+            document.getElementById('buy-orders').classList.remove('d-none');
+            document.getElementById('sell-orders').classList.add('d-none');
+            this.classList.add('active');
+            document.getElementById('sell-tab').classList.remove('active');
+        });
+
+        document.getElementById('sell-tab').addEventListener('click', function() {
+            document.getElementById('sell-orders').classList.remove('d-none');
+            document.getElementById('buy-orders').classList.add('d-none');
+            this.classList.add('active');
+            document.getElementById('buy-tab').classList.remove('active');
+        });
+
+        // Фильтрация без перезагрузки страницы
+        const filterLinks = document.querySelectorAll('.filter');
+        filterLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const filterType = this.dataset.filterType;
+                const filterValue = this.dataset.filterValue;
+                fetchFilteredOrders(filterType, filterValue);
+            });
+        });
+
+        function fetchFilteredOrders(filterType, filterValue) {
+            fetch(`{% url 'product_detail' product.id %}?${filterType}=${filterValue}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                updateOrders('buy-orders-body', data.buy_orders);
+                updateOrders('sell-orders-body', data.sell_orders);
+            });
+        }
+
+        function updateOrders(elementId, orders) {
+            const ordersBody = document.getElementById(elementId);
+            ordersBody.innerHTML = '';
+            if (orders.length > 0) {
+                orders.forEach(order => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${order.user__username}</td>
+                        <td>${order.quantity}</td>
+                        <td>${order.price}</td>
+                        <td>${order.currency}</td>
+                    `;
+                    ordersBody.appendChild(row);
+                });
+            } else {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td colspan="4">No orders available.</td>`;
+                ordersBody.appendChild(row);
+            }
+        }
     });
 </script>
 {% endblock %}
